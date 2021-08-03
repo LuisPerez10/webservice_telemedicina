@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
-const Civil = require('../models/civil');
-const Oficial = require('../models/oficial');
+const Paciente = require('../models/paciente');
+const Medico = require('../models/medico');
 const { generarJWT } = require('../helpers/jwt');
 const { getMenuFrontEnd } = require('../helpers/menu-frontend');
 const { esEstadoDenegadoRol } = require('../helpers/access-estado');
@@ -26,16 +26,17 @@ const login = async(req, res = response) => {
         }
         const personaDB = await Persona.findOne({ 'usuario': usuarioDB.id });
 
-        if (esEstadoDenegadoRol(usuarioDB.estado)) {
-            console.log('Usuario no disponible  temporalmente');
-            console.log(usuarioDB);
-            return res.status(400).json({
-                ok: false,
-                msg: 'Usuario no disponible temporalmente'
-            });
-        }
+        // if (esEstadoDenegadoRol(usuarioDB.estado)) {
+        //     console.log('Usuario no disponible  temporalmente');
+        //     console.log(usuarioDB);
+        //     return res.status(400).json({
+        //         ok: false,
+        //         msg: 'Usuario no disponible temporalmente'
+        //     });
+        // }
 
 
+        console.log(usuarioDB.id);
 
         // Verificar contraseña
         const validPassword = bcrypt.compareSync(password, usuarioDB.password);
@@ -143,11 +144,11 @@ const renewToken = async(req, res = response) => {
 const getDataByRol = async(role, id) => {
     var dataDB;
     switch (role) {
-        case 'CIVIL_ROLE':
-            dataDB = await Civil.findOne({ 'persona': id });
+        case 'MEDICO_ROLE':
+            dataDB = await Medico.findOne({ 'persona': id });
             break;
-        case 'OFICIAL_ROLE':
-            dataDB = await Oficial.findOne({ 'persona': id });
+        case 'PACIENTE_ROLE':
+            dataDB = await Paciente.findOne({ 'persona': id });
             break;
     }
     return dataDB;

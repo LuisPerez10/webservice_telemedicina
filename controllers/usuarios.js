@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
-const Civil = require('../models/civil');
-const Oficial = require('../models/oficial');
+const Paciente = require('../models/paciente');
+const Medico = require('../models/medico');
 
 
 
@@ -139,16 +139,16 @@ const crearUsuario = async(req, res = response) => {
         var data;
         switch (role) {
             case 'CIVIL_ROLE':
-                data = new Civil({
+                data = new Paciente({
                     persona: persona.id,
                     ...req.body
                 });
-                // Guardar Civil
+                // Guardar Paciente
 
                 await civil.save();
                 break;
             case 'OFICIAL_ROLE':
-                data = new Oficial({
+                data = new Medico({
                     persona: persona.id,
                     ...req.body
                 })
