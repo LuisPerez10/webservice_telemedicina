@@ -29,8 +29,7 @@ const UsuarioSchema = Schema({
     img_perfil: {
         type: String
     },
-    // timestamps: true
-}, { collection: "usuarios" });
+}, { collection: "usuarios", timestamps: true });
 
 
 UsuarioSchema.method('toJSON', function() {

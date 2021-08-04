@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 // Base de datos
-dbConnection();
+//dbConnection();
 
 // Directorio publico 
 // app.use(express.static('public'));
