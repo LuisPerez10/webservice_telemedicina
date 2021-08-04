@@ -9,8 +9,6 @@ const Medico = require('../models/medico');
 
 
 // const { notificarUserUpdated } = require('../controllers/notificaciones');
-const usuario = require('../models/usuario');
-
 
 const verificarKeyUnica = async(req, res) => {
     const key = req.params.key;
@@ -119,14 +117,14 @@ const crearUsuario = async(req, res = response) => {
 
 
         const usuario = new Usuario(req.body);
-
         // Encriptar contraseña
         const salt = bcrypt.genSaltSync();
         usuario.password = bcrypt.hashSync(password, salt);
         usuario.estado = getEstadoFromRole(role);
 
         // Guardar usuario
-        await usuario.save();
+
+        console.log(usuario.id);
 
         const persona = new Persona({
             usuario: usuario.id,
@@ -134,26 +132,9 @@ const crearUsuario = async(req, res = response) => {
         });
 
         // Guardar persona
-
+        await usuario.save();
         await persona.save();
-        var data;
-        switch (role) {
-            case 'CIVIL_ROLE':
-                data = new Paciente({
-                    persona: persona.id,
-                    ...req.body
-                });
-                // Guardar Paciente
-
-                await civil.save();
-                break;
-            case 'OFICIAL_ROLE':
-                data = new Medico({
-                    persona: persona.id,
-                    ...req.body
-                })
-                break;
-        }
+        const data = await saveByRol(role, persona.id, req);
 
         // const trabajador = new Trabajador({
 
@@ -182,9 +163,31 @@ const crearUsuario = async(req, res = response) => {
             msg: 'Error inesperado... revisar logs'
         });
     }
-
-
 }
+
+
+const saveByRol = async(role, id, req) => {
+    var data;
+    switch (role) {
+        case 'MEDICO_ROLE':
+
+            data = new Medico({
+                persona: id,
+                ...req.body
+            })
+            break;
+        case 'PACIENTE_ROLE':
+            data = new Paciente({
+                persona: id,
+                ...req.body
+            });
+            break;
+    }
+    if (data != undefined) await data.save();
+
+    return data;
+}
+
 
 const getEstadoFromRole = (role) => {
 

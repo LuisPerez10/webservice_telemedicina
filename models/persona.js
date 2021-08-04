@@ -19,6 +19,11 @@ const PersonaSchema = Schema({
         required: true,
         default: 'sin celular'
     },
+    genero: {
+        type: String,
+        required: true,
+        default: 'sin genero'
+    },
     fecha_nacimiento: {
         type: Date,
         required: true,
