@@ -8,12 +8,17 @@ const { validarJWT, varlidarADMIN_ROLE_o_MismoUsuario } = require('../middleware
 
 const { getUsuarios, crearUsuario, verificarKeyUnica, actualizarUsuario, borrarUsuario } = require('../controllers/usuarios');
 
+const {enviarCodigo, verificarCodigo} = require('../controllers/verificar');
+
 
 const router = Router();
 
 
 // router.get( '/', validarJWT , getUsuarios );
 
+ router.get('/codigo', verificarCodigo)
+
+router.get('/sendsms', enviarCodigo);
 router.get('/:key', verificarKeyUnica);
 
 
