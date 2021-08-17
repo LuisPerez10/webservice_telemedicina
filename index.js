@@ -17,7 +17,7 @@ app.use(cors());
 //lectura y parseo del body
 app.use(express.json());
 
-// Base de datos
+//Base de datos
 dbConnection();
 
 // Directorio publico 

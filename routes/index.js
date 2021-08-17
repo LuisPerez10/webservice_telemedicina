@@ -10,6 +10,7 @@ app.use('/usuarios', require('./usuarios'));
 app.use('/todo', require('./busquedas'));
 app.use('/medicos', require('./medicos'));
 app.use('/tickets', require('./tickets'));
+app.use('/especialidad', require('./especialidad'))
 // app.use(require('./upload_image'));
 
 module.exports = app;
