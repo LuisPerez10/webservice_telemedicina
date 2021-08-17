@@ -5,15 +5,19 @@ const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
 const Paciente = require('../models/paciente');
 const Medico = require('../models/medico');
+const { enviarEmailClass } = require('../controllers/verificar');
+
+
 
 
 
 // const { notificarUserUpdated } = require('../controllers/notificaciones');
 
 const verificarKeyUnica = async(req, res) => {
-    const key = req.params.key;
+    var email = req.query.email;
+    console.log(email);
     try {
-        const existeKey = await Usuario.findOne({ 'email': key });
+        const existeKey = await Usuario.findOne({ email });
         if (existeKey) {
             return res.status(400).json({
                 ok: false,
@@ -66,21 +70,23 @@ const actualizarUsuario = async(req, res = response) => {
                 });
             }
         }
-        campos.email = email;
+
+        if (usuarioDB.estado !== campos.estado) {
+            enviarEmailClass(`Cuenta de usuario ${campos.estado}`, email, 'actualiza');
+
+        }
 
 
-        // if (!usuarioDB.google) {
-        //     campos.email = email;
-        // } else if (usuarioDB.email !== email) {
-        //     return res.status(400).json({
-        //         ok: false,
-        //         msg: 'Usuario de google no pueden cambiar su correo'
-        //     });
-        // }
+        //verificar que se ha cambiado el ROL. 
+        //enviar email, cuenta habilitada
+
+
+
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, { new: true });
         //    await notificarUserUpdated(uid, usuario.estado, campos.estado);
         // await notificarUserUpdated(uid, 'Titulo', 'Mensaje Actulizado', 'valuess');
+
 
 
         res.json({
@@ -100,7 +106,7 @@ const actualizarUsuario = async(req, res = response) => {
 }
 
 const crearUsuario = async(req, res = response) => {
-
+    console.log(req.body);
     const { email, password, role } = req.body;
 
     try {
@@ -168,18 +174,24 @@ const crearUsuario = async(req, res = response) => {
 
 const saveByRol = async(role, id, req) => {
     var data;
+    console.log('campos');
+    const { persona, ...campos } = req.body;
+    console.log(campos);
     switch (role) {
         case 'MEDICO_ROLE':
 
             data = new Medico({
                 persona: id,
-                ...req.body
+                ...campos
             })
             break;
         case 'PACIENTE_ROLE':
+            // TODO
+            enviarEmailClass("Confirmar Correo", campos.email, 'confirma');
+            // enviar correo para cambiar el estado de inhabilitado
             data = new Paciente({
                 persona: id,
-                ...req.body
+                ...campos
             });
             break;
     }
@@ -192,14 +204,17 @@ const saveByRol = async(role, id, req) => {
 const getEstadoFromRole = (role) => {
 
     switch (role) {
-        case 'TRABAJADOR_ROLE':
+        case 'PACIENTE_ROLE':
             return 'pendiente'
             break;
-        case 'EMPLEADOR_ROLE':
-            return 'habilitado'
+        case 'MEDICO_ROLE':
+            return 'pendiente'
             break;
         case 'ADMIN_ROLE':
-            return 'habilitado'
+            return 'pendiente'
+            break;
+        case 'USER_ROLE':
+            return 'pendiente'
             break;
         default:
             return 'inhabilitado'

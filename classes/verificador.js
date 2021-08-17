@@ -1,40 +1,39 @@
+// var Guid = require('./generador');
+// var twilio = require('../helpers/twilio');
 
-var Guid = require('./generador');
-var twilio = require('../helpers/twilio');
 
-class Verificador {
-    constructor() {
-        this.codigoVerificacion = new Map();
-    }
-    
-    enviarSmS(nroTelefono){
-        //aqui meto el generador
-        let value = Guid.Generador();
-        console.log(value); 
+// class Verificador {
+//     constructor() {
+//         this.codigoVerificacion = new Map();
+//     }
 
-        //uso twilio para enviar el mensaje
-        twilio.enviarSmS(nroTelefono, value);
+//     enviarSmS(nroTelefono) {
+//         //aqui meto el generador
+//         let value = Guid.Generador();
+//         console.log(value);
 
-        this.codigoVerificacion.set(nroTelefono, value);
-        console.log(this.codigoVerificacion.size);
+//         //uso twilio para enviar el mensaje
+//         twilio.enviarSmS(nroTelefono, value);
 
-        return true;
-    }
+//         this.codigoVerificacion.set(nroTelefono, value);
+//         console.log(this.codigoVerificacion.size);
 
-    verificar(nroTelefono, codigo){
-        let codigoconfirmar = this.codigoVerificacion.get(nroTelefono);
+//         return true;
+//     }
 
-        if(codigoconfirmar != undefined){
-            if(codigoconfirmar == codigo){
-                console.log('entro ok');
-                this.codigoVerificacion.delete(nroTelefono);
-                return true;
-            } 
-        }    
-        console.log('Nooo entro ok');
-        return false;
-    }
-}
+//     verificar(nroTelefono, codigo) {
+//         let codigoconfirmar = this.codigoVerificacion.get(nroTelefono);
 
-module.exports = {Verificador}
+//         if (codigoconfirmar != undefined) {
+//             if (codigoconfirmar == codigo) {
+//                 console.log('entro ok');
+//                 this.codigoVerificacion.delete(nroTelefono);
+//                 return true;
+//             }
+//         }
+//         console.log('Nooo entro ok');
+//         return false;
+//     }
+// }
 
+// module.exports = { Verificador }

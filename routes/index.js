@@ -8,6 +8,8 @@ const app = express();
 app.use('/login', require('./auth'));
 app.use('/usuarios', require('./usuarios'));
 app.use('/todo', require('./busquedas'));
+app.use('/medicos', require('./medicos'));
+app.use('/tickets', require('./tickets'));
 // app.use(require('./upload_image'));
 
 module.exports = app;

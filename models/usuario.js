@@ -15,6 +15,7 @@ const UsuarioSchema = Schema({
     },
     estado: {
         type: String,
+        required: false,
         default: 'inhabilitado' //  disponible, inhabilitado,  habilitado 
     },
     role: {

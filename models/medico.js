@@ -27,11 +27,7 @@ const medicoSchema = Schema({
         required: false,
         default: 0
     },
-    carnetIdentidad: {
-        type: String,
-        default: 'Sin carnet',
-        required: false
-    },
+
     descripcion: {
         type: String,
         default: 'Sin descripcion',
@@ -42,6 +38,10 @@ const medicoSchema = Schema({
         required: false
     },
     credencialMedico: {
+        type: String,
+        required: false
+    },
+    especialidad: {
         type: String,
         required: false
     },

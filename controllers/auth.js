@@ -26,17 +26,15 @@ const login = async(req, res = response) => {
         }
         const personaDB = await Persona.findOne({ 'usuario': usuarioDB.id });
 
-        // if (esEstadoDenegadoRol(usuarioDB.estado)) {
-        //     console.log('Usuario no disponible  temporalmente');
-        //     console.log(usuarioDB);
-        //     return res.status(400).json({
-        //         ok: false,
-        //         msg: 'Usuario no disponible temporalmente'
-        //     });
-        // }
+        if (esEstadoDenegadoRol(usuarioDB.estado)) {
+            console.log('Usuario no disponible  temporalmente');
+            console.log(usuarioDB);
+            return res.status(400).json({
+                ok: false,
+                msg: 'Usuario no disponible temporalmente'
+            });
+        }
 
-
-        console.log(usuarioDB.id);
 
         // Verificar contraseña
         const validPassword = bcrypt.compareSync(password, usuarioDB.password);

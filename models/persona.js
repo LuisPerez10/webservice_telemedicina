@@ -11,7 +11,7 @@ const PersonaSchema = Schema({
     },
     direccion: {
         type: String,
-        required: true,
+        required: false,
         default: 'sin direccion'
     },
     celular: {
@@ -19,14 +19,19 @@ const PersonaSchema = Schema({
         required: true,
         default: 'sin celular'
     },
+    carnetIdentidad: {
+        type: String,
+        default: 'Sin carnet',
+        required: false
+    },
     genero: {
         type: String,
-        required: true,
-        default: 'sin genero'
+        required: false,
+        default: 'Hombre'
     },
     fecha_nacimiento: {
         type: Date,
-        required: true,
+        required: false,
         // default:'sin direccion'
     },
     usuario: {

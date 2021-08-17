@@ -8,7 +8,8 @@ const { validarJWT, varlidarADMIN_ROLE_o_MismoUsuario } = require('../middleware
 
 const { getUsuarios, crearUsuario, verificarKeyUnica, actualizarUsuario, borrarUsuario } = require('../controllers/usuarios');
 
-const {enviarCodigo, verificarCodigo} = require('../controllers/verificar');
+const { enviarCodigo, verificarEmail } = require('../controllers/verificar');
+const { sendEmail } = require('../helpers/send-email');
 
 
 const router = Router();
@@ -16,17 +17,17 @@ const router = Router();
 
 // router.get( '/', validarJWT , getUsuarios );
 
- router.get('/codigo', verificarCodigo)
+router.get('/verificado', verificarEmail)
 
-router.get('/sendsms', enviarCodigo);
-router.get('/:key', verificarKeyUnica);
+// router.get('/sendsms', enviarCodigo);
+
+router.get('/keyunica', verificarKeyUnica);
 
 
 router.post('/', [
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
         check('apellido', 'El apellido es obligatorio').not().isEmpty(),
         check('celular', 'El Numero de celular es obligatorio').not().isEmpty(),
-        check('direccion', 'La direccion es obligatorio').not().isEmpty(),
         check('password', 'El password es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').isEmail(),
         validarCampos,
@@ -34,9 +35,13 @@ router.post('/', [
     crearUsuario
 );
 
-router.post('/test', (req, res = response) => res.json({
-    ok: true
-}))
+router.post('/test', (req, res = response) => {
+    console.log('test');
+    sendEmail();
+    res.json({
+        ok: true
+    })
+});
 
 // testear
 // subir archiv
