@@ -178,13 +178,13 @@ const saveByRol = async(role, id, req) => {
     const { persona, ...campos } = req.body;
     console.log(campos);
     switch (role) {
-        case 'MEDICO_ROLE':
+        // case 'MEDICO_ROLE':
 
-            data = new Medico({
-                persona: id,
-                ...campos
-            })
-            break;
+        //     data = new Medico({
+        //         persona: id,
+        //         ...campos
+        //     })
+        //     break;
         case 'PACIENTE_ROLE':
             // TODO
             enviarEmailClass("Confirmar Correo", campos.email, 'confirma');
@@ -197,6 +197,23 @@ const saveByRol = async(role, id, req) => {
     }
     if (data != undefined) await data.save();
 
+    return data;
+}
+
+
+const getByRol = async(role, id) => {
+    var data;
+    switch (role) {
+        case 'MEDICO_ROLE':
+            data = await Medico.findOne({ persona: id });
+            break;
+        case 'PACIENTE_ROLE':
+            data = await Paciente.findOne({ persona: id });
+            break;
+        case 'ADMIN_ROLE':
+            break;
+
+    }
     return data;
 }
 
@@ -226,23 +243,21 @@ const getEstadoFromRole = (role) => {
 
 const getUsuarios = async(req, res) => {
 
-    var { desde, entrada, sort, ...constula } = req.query;
+    var { desde, entrada, sort, ...consulta } = req.query;
 
     desde = Number(desde) || 0;
     entrada = Number(entrada) || 5;
     sort = Number(sort) || 1;
 
-    console.log('req.query');
-    console.log(req.query);
 
     const [usuarios, total] = await Promise.all([
         Usuario
-        .find(constula, 'nombre email img role estado createdAt')
+        .find(consulta, 'nombre email img role estado createdAt')
         .skip(desde)
         .limit(entrada)
         .sort({ createdAt: sort }),
         Usuario
-        .find(constula, 'nombre email img role estado createdAt').countDocuments()
+        .find(consulta, 'nombre email img role estado createdAt').countDocuments()
     ]);
     // total = usuarios.length;
 
@@ -254,13 +269,70 @@ const getUsuarios = async(req, res) => {
 
 }
 
+// const getUsuario = async(req, res) => {
+//     const uid = req.params.id;
+//     const { role } = req.body;
+
+//     try {
+
+//         const personaDB = await Persona.findOne({ "role": role });
+
+//         if (!personaDB) {
+//             return res.status(404).json({
+//                 ok: false,
+//                 msg: 'No existe una persona por ese id'
+//             });
+//         }
+
+
+//         res.json({
+//             ok: true,
+//             persona,
+
+//         });
+
+
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({
+//             ok: false,
+//             msg: 'Error inesperado'
+//         })
+//     }
+
+
+
+//     // var role = req.role;
+//     console.log('role');
+//     // console.log(role);
+//     const desde = Number(req.query.desde) || 0;
+//     const entrada = Number(req.query.entrada) || 5;
+
+//     const [usuarios] = await Promise.all([
+//         Usuario
+//         .find({ role: 'USER_ROLE' }, 'nombre email role')
+//         .skip(desde)
+//         .limit(entrada),
+
+//         Usuario.countDocuments()
+//     ]);
+//     total = usuarios.length;
+
+//     res.json({
+//         ok: true,
+//         usuarios,
+//         total
+//     });
+
+// }
+
 const getUsuario = async(req, res) => {
     const uid = req.params.id;
-    const { role } = req.body;
 
     try {
 
-        const personaDB = await Persona.findOne({ "role": role });
+        const usuarioDB = await Usuario.findById(uid);
+        const personaDB = await Persona.findOne({ usuario: uid });
 
         if (!personaDB) {
             return res.status(404).json({
@@ -269,10 +341,14 @@ const getUsuario = async(req, res) => {
             });
         }
 
+        const data = await getByRol(usuarioDB.role, personaDB.id);
+
 
         res.json({
             ok: true,
-            persona,
+            usuario: usuarioDB,
+            persona: personaDB,
+            data
 
         });
 
@@ -287,29 +363,8 @@ const getUsuario = async(req, res) => {
 
 
 
-    // var role = req.role;
-    console.log('role');
-    // console.log(role);
-    const desde = Number(req.query.desde) || 0;
-    const entrada = Number(req.query.entrada) || 5;
-
-    const [usuarios] = await Promise.all([
-        Usuario
-        .find({ role: 'USER_ROLE' }, 'nombre email role')
-        .skip(desde)
-        .limit(entrada),
-
-        Usuario.countDocuments()
-    ]);
-    total = usuarios.length;
-
-    res.json({
-        ok: true,
-        usuarios,
-        total
-    });
-
 }
+
 
 module.exports = {
     actualizarUsuario,

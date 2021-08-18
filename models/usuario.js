@@ -27,7 +27,7 @@ const UsuarioSchema = Schema({
         type: String,
         required: true,
     },
-    img_perfil: {
+    img: {
         type: String
     },
 }, { collection: "usuarios", timestamps: true });

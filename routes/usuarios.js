@@ -6,7 +6,7 @@ const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT, varlidarADMIN_ROLE_o_MismoUsuario } = require('../middlewares/validar-jwt');
 
-const { getUsuarios, crearUsuario, verificarKeyUnica, actualizarUsuario, borrarUsuario } = require('../controllers/usuarios');
+const { getUsuarios, crearUsuario, verificarKeyUnica, actualizarUsuario, getUsuario } = require('../controllers/usuarios');
 
 const { enviarCodigo, verificarEmail } = require('../controllers/verificar');
 const { sendEmail } = require('../helpers/send-email');
@@ -15,14 +15,15 @@ const { sendEmail } = require('../helpers/send-email');
 const router = Router();
 
 
-// router.get( '/', validarJWT , getUsuarios );
 
 router.get('/verificado', verificarEmail)
 
-// router.get('/sendsms', enviarCodigo);
 
 router.get('/keyunica', verificarKeyUnica);
 
+// router.get('/', verificarKeyUnica);
+
+router.get('/usuario/:id', getUsuario);
 
 router.post('/', [
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
@@ -35,20 +36,7 @@ router.post('/', [
     crearUsuario
 );
 
-router.post('/test', (req, res = response) => {
-    console.log('test');
-    sendEmail();
-    res.json({
-        ok: true
-    })
-});
 
-// testear
-// subir archiv
-
-// registrar trabajador servicio
-
-// servicios, caterogiras
 
 router.get('/',
     validarJWT,
