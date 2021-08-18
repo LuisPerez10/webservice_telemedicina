@@ -16,7 +16,7 @@ router.put('/img/:id', validarJWT, fileUploadS3);
 
 // archivo (pdf) id->usuario
 // corergir rruta
-router.put('/file/:id', validarJWT, fileUploadPDFS3);
+router.put('/file/:id', fileUploadPDFS3);
 
 // router.put('/files', filesUploadS3);
 

@@ -81,7 +81,6 @@ const renewToken2 = async(req, res = response) => {
     // Obtener el usuario por UID
     try {
         const usuario = await Usuario.findById(uid);
-        console.log(usuario);
         res.json({
             ok: true,
             token,
