@@ -1,11 +1,14 @@
 const { response } = require('express');
 
 const Medico = require('../models/medico');
+const Persona = require('../models/persona');
+
+var  listamedicos = [];
 
 const getMedicos = async(req, res = response) => {
 
     const medicos = await Medico.find()
-        .populate('persona', 'nombre apellido img_perfil')
+        .populate('persona', 'nombre apellido img')
     res.json({
         ok: true,
         medicos
@@ -18,7 +21,7 @@ const getMedicoById = async(req, res = response) => {
 
     try {
         const medico = await Medico.findById(id)
-            .populate('persona', 'nombre apellido img_perfil')
+            .populate('persona', 'nombre apellido img')
 
         res.json({
             ok: true,
@@ -139,10 +142,93 @@ const borrarMedico = async(req, res = response) => {
 
 
 
+const getMedicoByEspecialidad = async(req, res = response) => {
+
+    const nombreEspecialidad = req.params.especialidad;
+
+    await Medico.find({especialidad: nombreEspecialidad}, 'calificacion especialidad').populate('persona', 'nombre apellido')
+    .exec( (err, medicosDB) =>{
+        if (err) {
+          return res.status(400).json({
+             ok:false,
+             msg:"hable con el administrador"
+           });
+         }
+         res.json({
+           ok: true,
+           medicosDB
+         })
+      })
+
+  
+}
+
+
+const getMedicoByNombre = async(req, res = response) => {
+
+    const nombre = req.body.nombre;
+     const regexName = new RegExp(nombre, 'i');
+
+    try {
+        const   personasDB = await Persona.find( { nombre: regexName}, 'nombre apellido').sort('nombre')
+           .populate({path: 'usuario',  match: {role:"MEDICO_ROLE", estado: "habilitado"}, select: 'estado email role id'});
+
+         
+      if (!personasDB) {
+          return res.status(404).json({
+              ok: false,
+              msg: 'No existe una persona por ese nombre'
+          });
+      }
+ 
+   var listamedicos = [];  
+   if(personasDB.length == 0){
+    return res.status(200).json({
+        ok: false,
+        listamedicos
+    });
+   }
+       console.log(personasDB);
+    var index = 0;
+    personasDB.forEach( async(data) =>  {
+        
+        if(personasDB[index].usuario){
+            const medico =  await Medico.findOne({ "persona": data._id}, 'calificacion especialidad descripcion')
+            .populate({path: 'persona', select: 'nombre apellido'});    
+            
+            if(medico ){
+                listamedicos.push(medico);
+            }
+        }
+        index = index + 1;
+       
+            if(index == (personasDB.length )){
+
+                return  res.json({
+                    ok: true,
+                    listamedicos,
+                });
+            }
+        
+      });
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({
+          ok: false,
+          msg: 'Error inesperado'
+      })
+  }
+
+  
+}
+
+
 module.exports = {
     getMedicos,
     crearMedico,
     actualizarMedico,
     borrarMedico,
-    getMedicoById
+    getMedicoById,
+    getMedicoByEspecialidad,
+    getMedicoByNombre
 }

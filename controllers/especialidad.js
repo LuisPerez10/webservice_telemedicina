@@ -51,8 +51,7 @@ const getEspecialidades = async(req, res) => {
       })
 }
 
-
 module.exports = {
    crearEspecialidad,
-   getEspecialidades
+   getEspecialidades,
 }
