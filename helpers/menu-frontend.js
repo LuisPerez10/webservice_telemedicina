@@ -24,7 +24,7 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
     ];
 
     if (role === 'ADMIN_ROLE') {
-        menu[1].submenu.unshift({ titulo: 'Usuarios', url: 'usuarios' })
+        menu[1].submenu.unshift({ titulo: 'Usuarios', url: 'usuarios' }, { titulo: 'Ficha Medicas', url: 'fichamedicas' })
     }
 
     return menu;

@@ -111,7 +111,6 @@ const fileUploadPDFS3 = async(req, res) => {
 
     try {
         const url = await uploadS3(path, file.data);
-        console.log(url);
         var subio = await actualizarMedico(id, url);
 
         return res.json({

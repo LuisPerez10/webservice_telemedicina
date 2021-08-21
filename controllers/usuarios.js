@@ -108,7 +108,6 @@ const actualizarUsuario = async(req, res = response) => {
 const crearUsuario = async(req, res = response) => {
     console.log(req.body);
     const { email, password, role } = req.body;
-
     try {
 
         const existeEmail = await Usuario.findOne({ email });
@@ -130,7 +129,6 @@ const crearUsuario = async(req, res = response) => {
 
         // Guardar usuario
 
-        console.log(usuario.id);
 
         const persona = new Persona({
             usuario: usuario.id,
@@ -142,18 +140,6 @@ const crearUsuario = async(req, res = response) => {
         await persona.save();
         const data = await saveByRol(role, persona.id, req);
 
-        // const trabajador = new Trabajador({
-
-        //     persona: persona.id,
-        //     ...req.body
-        // });
-        // Guardar trabajador
-
-        // await trabajador.save();
-        // Generar el TOKEN - JWT
-        // const token = await generarJWT(usuario.id);
-        //YA NO CREA COLLECCION
-        // await createCollection(usuario.id);
         res.json({
             ok: true,
             usuario,
@@ -360,9 +346,6 @@ const getUsuario = async(req, res) => {
             msg: 'Error inesperado'
         })
     }
-
-
-
 }
 
 
