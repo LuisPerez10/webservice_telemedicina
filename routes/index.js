@@ -14,6 +14,7 @@ app.use('/especialidad', require('./especialidad'));
 app.use('/upload', require('./upload'));
 app.use('/fichamedica', require('./ficha-medica'));
 app.use('/notificacion', require('./notificacion'));
+app.use('/horarios', require('./horario'));
 // app.use(require('./upload_image'));
 
 module.exports = app;

@@ -50,6 +50,11 @@ const medicoSchema = Schema({
         ref: 'Persona',
         required: true
     },
+    horario: {
+        type: Schema.Types.ObjectId,
+        ref: 'Horario',
+        required: false
+    }
 
 });
 

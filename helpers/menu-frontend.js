@@ -16,15 +16,13 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
             titulo: 'Mantenimientos',
             icono: 'mdi mdi-folder-lock-open',
             submenu: [
-                { titulo: 'Fotografos', url: 'fotografos' },
-                { titulo: 'Estudios', url: 'estudios' },
-                { titulo: 'Eventos', url: 'eventos' },
+                { titulo: 'Ficha Medicas', url: 'fichamedicas' }
             ]
         },
     ];
 
     if (role === 'ADMIN_ROLE') {
-        menu[1].submenu.unshift({ titulo: 'Usuarios', url: 'usuarios' }, { titulo: 'Ficha Medicas', url: 'fichamedicas' })
+        menu[1].submenu.unshift({ titulo: 'Usuarios', url: 'usuarios' })
     }
 
     return menu;

@@ -7,7 +7,9 @@ const {
     actualizarFichaMedica,
     borrarFichaMedica,
     getFichaMedicaById,
-    getFichaMedicas
+    getFichaMedicas,
+    getFichaMedicasMedico,
+    getFichaMedicasPaciente
 } = require('../controllers/ficha-medicas')
 
 
@@ -21,7 +23,10 @@ router.put('/:id', actualizarFichaMedica);
 
 router.delete('/:id', borrarFichaMedica);
 
-router.get('/:id', getFichaMedicaById);
+router.get('/ficha/:id', getFichaMedicaById);
+
+router.get('/medico', validarJWT, getFichaMedicasMedico)
+router.get('/paciente', validarJWT, getFichaMedicasPaciente)
 
 
 

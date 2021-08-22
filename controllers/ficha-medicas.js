@@ -1,6 +1,7 @@
 const { response } = require('express');
 
 const FichaMedica = require('../models/ficha-medica');
+const Persona = require('../models/persona');
 
 
 const crearFichaMedica = async(req, res = response) => {
@@ -156,6 +157,67 @@ const getFichaMedicas = async(req, res) => {
     });
 
 }
+const getFichaMedicasMedico = async(req, res) => {
+    const uid = req.uid;
+    const personaDB = await Persona.findOne({ usuario: uid });
+
+    var { desde, entrada, sort, ...consulta } = req.query;
+
+    desde = Number(desde) || 0;
+    entrada = Number(entrada) || 5;
+    sort = Number(sort) || 1;
+    try {
+        const [fichaMedicas, total] = await Promise.all([
+            FichaMedica
+            .find({...consulta, 'medico': personaDB.id }, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } })
+            .skip(desde)
+            .limit(entrada)
+            .sort({ createdAt: sort }),
+            FichaMedica
+            .find(consulta, 'estado').countDocuments()
+        ]);
+        // total = usuarios.length;
+
+        res.json({
+            fichaMedicas,
+            total
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+}
+
+const getFichaMedicasPaciente = async(req, res) => {
+    const uid = req.uid;
+    const personaDB = await Persona.findOne({ usuario: uid });
+
+    try {
+
+        const fichaMedicas = await
+        FichaMedica
+            .find({ 'paciente': personaDB.id, estado: 'aceptado' }, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } })
+            .sort({ createdAt: 1 });
+        // total = usuarios.length;
+
+        res.json({
+            fichaMedicas
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
+
+
+}
+
 
 
 module.exports = {
@@ -163,5 +225,7 @@ module.exports = {
     actualizarFichaMedica,
     borrarFichaMedica,
     getFichaMedicaById,
-    getFichaMedicas
+    getFichaMedicas,
+    getFichaMedicasMedico,
+    getFichaMedicasPaciente
 }
