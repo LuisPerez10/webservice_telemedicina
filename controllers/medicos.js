@@ -39,6 +39,31 @@ const getMedicoById = async(req, res = response) => {
     }
 }
 
+const getMedicoByIdPersona = async(req, res = response) => {
+
+    const id = req.params.id;
+    console.log(id);
+
+    try {
+        const medico = await Medico.findOne({persona: id}, 'especialidad calificacion');
+            
+
+        res.json({
+            ok: true,
+            medico
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.json({
+            ok: true,
+            msg: 'Hable con el administrador',
+
+        })
+    }
+}
+
+
 const crearMedico = async(req, res = response) => {
 
     //id persona
@@ -259,6 +284,7 @@ module.exports = {
     actualizarMedico,
     borrarMedico,
     getMedicoById,
+    getMedicoByIdPersona,
     getMedicoByEspecialidad,
     getMedicoByNombre
 }

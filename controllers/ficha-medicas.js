@@ -199,12 +199,12 @@ const getFichaMedicasPaciente = async(req, res) => {
 
         const fichaMedicas = await
         FichaMedica
-            .find({ 'paciente': personaDB.id, estado: 'aceptado' }, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } })
+            .find({ 'paciente': personaDB.id, estado: 'aceptado' }, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id ' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id img' } })
             .sort({ createdAt: 1 });
         // total = usuarios.length;
 
         res.json({
-            fichaMedicas
+            fichaMedicas,
         });
     } catch (error) {
         console.log(error);
