@@ -37,11 +37,6 @@ const FichaMedicaSchema = Schema({
         ref: 'Persona',
         required: true
     },
-    consulta: {
-        type: Schema.Types.ObjectId,
-        ref: 'Consulta',
-        required: false
-    },
 
 }, { collection: 'fichaMedicas' });
 
