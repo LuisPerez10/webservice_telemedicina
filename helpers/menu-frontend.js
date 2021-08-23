@@ -16,9 +16,7 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
             titulo: 'Mantenimientos',
             icono: 'mdi mdi-folder-lock-open',
             submenu: [
-                { titulo: 'Fotografos', url: 'fotografos' },
-                { titulo: 'Estudios', url: 'estudios' },
-                { titulo: 'Eventos', url: 'eventos' },
+                { titulo: 'Ficha Medicas', url: 'fichamedicas' }
             ]
         },
     ];

@@ -9,7 +9,9 @@ const {
     crearMedico,
     actualizarMedico,
     borrarMedico,
-    getMedicoById
+    getMedicoById,
+    getMedicoByEspecialidad,
+    getMedicoByNombre
 } = require('../controllers/medicos')
 
 
@@ -42,6 +44,9 @@ router.get('/:id',
     validarJWT,
     getMedicoById
 );
+
+router.get('/getmedico/:especialidad', getMedicoByEspecialidad);
+router.post('/getmedicobynombre', getMedicoByNombre);
 
 
 

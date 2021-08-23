@@ -28,7 +28,6 @@ const login = async(req, res = response) => {
 
         if (esEstadoDenegadoRol(usuarioDB.estado)) {
             console.log('Usuario no disponible  temporalmente');
-            console.log(usuarioDB);
             return res.status(400).json({
                 ok: false,
                 msg: 'Usuario no disponible temporalmente'
@@ -81,7 +80,6 @@ const renewToken2 = async(req, res = response) => {
     // Obtener el usuario por UID
     try {
         const usuario = await Usuario.findById(uid);
-        console.log(usuario);
         res.json({
             ok: true,
             token,
@@ -113,7 +111,6 @@ const renewToken = async(req, res = response) => {
     }
     try {
         const usuario = await Usuario.findById(uid);
-        console.log(usuario);
 
         const data = await getDataByRol(usuario.role, personaDB.id); // data = oficial o civil
 
