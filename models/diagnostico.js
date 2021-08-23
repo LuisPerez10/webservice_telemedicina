@@ -34,4 +34,4 @@ diagnosticoSchema.method('toJSON', function() {
 
 
 
-module.exports = model('Medico', diagnosticoSchema);
+module.exports = model('Diagnostico', diagnosticoSchema);
