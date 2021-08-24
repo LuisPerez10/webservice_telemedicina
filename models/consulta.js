@@ -1,24 +1,25 @@
 const { Schema, model } = require('mongoose');
+var mongoose = require('mongoose');
 var Float = require('mongoose-float').loadType(mongoose);
 
-var SalaSchema=Schema({
-	uri:{
+var SalaSchema = Schema({
+    room: {
         type: String,
         required: true
     },
-    estado:{
+    estado: {
         type: String,
         required: false,
         default: "inhabilitado"
     },
-	
+
 });
 
 const ConsultaSchema = Schema({
     motivo: {
         type: String,
         required: false,
-        default: "nroFicha"
+        default: "No reason"
     },
     costo: {
         type: Float,
@@ -38,16 +39,17 @@ const ConsultaSchema = Schema({
     estado: {
         type: String,
         required: false,
-        //estado -> pendiente, rechazada, aceptada, atendida.
+        default: "pendiente"
+            //estado -> pendiente, rechazada, aceptada, atendida.
     },
     medico: {
         type: Schema.Types.ObjectId,
-        ref: 'Medico',
+        ref: 'Persona',
         required: true
     },
     paciente: {
         type: Schema.Types.ObjectId,
-        ref: 'Paciente',
+        ref: 'Persona',
         required: true
     },
     fichamedica: {

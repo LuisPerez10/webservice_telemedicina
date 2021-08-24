@@ -10,7 +10,6 @@ const {
     actualizarMedico,
     borrarMedico,
     getMedicoById,
-    getMedicoByIdPersona,
     getMedicoByEspecialidad,
     getMedicoByNombre
 } = require('../controllers/medicos')
