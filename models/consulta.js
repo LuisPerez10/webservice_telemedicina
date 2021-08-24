@@ -23,7 +23,7 @@ const ConsultaSchema = Schema({
     costo: {
         type: Float,
         required: false,
-        default: Date.now(),
+        default: 0.0,
     },
     duracion: {
         type: Date,

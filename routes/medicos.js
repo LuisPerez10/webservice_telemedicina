@@ -48,7 +48,7 @@ router.get('/:id',
 
 router.get('/getmedico/:especialidad', getMedicoByEspecialidad);
 router.post('/getmedicobynombre', getMedicoByNombre);
-router.get('/getmedicobypersona/:id',getMedicoByIdPersona);
+
 
 
 

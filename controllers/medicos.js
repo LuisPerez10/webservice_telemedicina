@@ -260,7 +260,6 @@ module.exports = {
     actualizarMedico,
     borrarMedico,
     getMedicoById,
-    getMedicoByIdPersona,
     getMedicoByEspecialidad,
     getMedicoByNombre
 }
