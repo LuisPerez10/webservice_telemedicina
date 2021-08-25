@@ -86,10 +86,9 @@ const obtenerHorario = async(req, res) => {
         var horarioDB = await Horario.findById(medicoDB.horario);
 
 
-        res.json({
-            ok: true,
-            horario: horarioDB
-        });
+        res.json(
+            horarioDB
+        );
 
     } catch (error) {
         console.log(error);

@@ -27,6 +27,10 @@ const FichaMedicaSchema = Schema({
         required: false,
         //estado -> pendiente, rechazada, aceptada, atendida.
     },
+    nota: {
+        type: String,
+        required: false
+    },
     medico: {
         type: Schema.Types.ObjectId,
         ref: 'Persona',
@@ -36,12 +40,7 @@ const FichaMedicaSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Persona',
         required: true
-    },
-    consulta: {
-        type: Schema.Types.ObjectId,
-        ref: 'Consulta',
-        required: false
-    },
+    }
 
 }, { collection: 'fichaMedicas' });
 

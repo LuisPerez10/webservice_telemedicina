@@ -13,10 +13,19 @@ const notificar = async(uid, title, mensaje, value) => {
     pushnotificacion(data, tokens);
 }
 
-const notificarDenuncia = (uids, denuncia) => {
-    uids.forEach((uid) => {
-        notificar(uid, "👮 Se ha realizado un nuevo reporte", "Alguien cercano a ti, necesita apoyo 👮‍♀️ 😀", denuncia);
-    });
+// const notificarDenuncia = (uids, denuncia) => {
+//     uids.forEach((uid) => {
+//         notificar(uid, "👮 Se ha realizado un nuevo reporte", "Alguien cercano a ti, necesita apoyo 👮‍♀️ 😀", denuncia);
+//     });
+// }
+const notificarNuevaReserva = (uid) => {
+    notificar(uid, "😀 Nueva reserva", "Haz recibido una nueva solicitud de reserva😀");
+}
+const notificarReservaRechazada = (uid) => {
+    notificar(uid, "😀 Reserva rechazada", "Tu solicitud de reserva no ha sido aceptada😀");
+}
+const notificarReservaAceptada = (uid) => {
+    notificar(uid, "😀 Reserva aceptada", "Tu solicitud de reserva  ha sido aceptada😀");
 }
 
 const notificarUserUpdated = (uid, estado, nuevoestado) => {
@@ -238,7 +247,9 @@ const notificarFCM = async(req, res) => {
 
 
 module.exports = {
-    notificarDenuncia,
+    notificarNuevaReserva,
+    notificarReservaAceptada,
+    notificarReservaRechazada,
     notificar,
     notificarUserUpdated,
     guardarTokenFCM,

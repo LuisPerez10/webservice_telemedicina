@@ -2,6 +2,13 @@ const { response } = require('express');
 
 const FichaMedica = require('../models/ficha-medica');
 const Persona = require('../models/persona');
+const Medico = require('../models/medico');
+const Usuario = require('../models/usuario');
+var Guid = require('../classes/generador');
+var { notificarNuevaReserva, notificarReservaRechazada, notificarReservaAceptada } = require('./notificaciones');
+const Tickets = require('./tickets');
+const { formatDate, formatDateTime } = require('../helpers/parse-date');
+
 
 
 const crearFichaMedica = async(req, res = response) => {
@@ -10,14 +17,36 @@ const crearFichaMedica = async(req, res = response) => {
     const {...campos } = req.body;
 
     const fichaMedica = new FichaMedica({
+        nroFicha: Guid.Generador(),
         estado: "pendiente",
         ...campos
     });
+    const persona = req.body.medico;
+    const tiempo = parseInt(req.body.tiempo);
+    var horaInicio = req.body.horaInicio;
+    var horaIniciodate = new Date(horaInicio);
+    var fecha = req.body.fecha;
+
 
 
     try {
+        const personaDB = await Persona.findById(persona);
+
+        const usuarioMedico = await Usuario.findById(personaDB.usuario);
 
         const fichaMedicaDB = await fichaMedica.save();
+        // TODO parsear las fechas para guardar en la base de datos.
+        const medicoDB = await Medico.findOne({ 'persona': personaDB.id });
+
+        var horaFin = new Date(horaIniciodate.setMinutes(horaIniciodate.getMinutes() + tiempo));
+
+        var fechaStr = formatDate(fecha);
+        var horaInicioStr = formatDateTime(horaInicio);
+        var horaFinStr = formatDateTime(horaFin.toISOString());
+
+        await Tickets.putTicketLocal(medicoDB.id, horaInicioStr, horaFinStr, fechaStr, tiempo.toString());
+
+        notificarNuevaReserva(usuarioMedico.id);
 
 
         res.json({
@@ -57,6 +86,93 @@ const getFichaMedicaById = async(req, res) => {
             msg: 'Hable con el administrador'
         })
     }
+}
+
+const rechazarFichaMedica = async(req, res = response) => {
+
+    const id = req.params.id;
+
+    try {
+
+        var fichaMedica = await FichaMedica.findById(id);
+
+        if (!fichaMedica) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Ficha medica no encontrado por id',
+            });
+        }
+
+        fichaMedica.estado = "cancelado";
+        fichaMedica.nota = req.body.nota;
+
+        const fichaMedicaActualizada = await fichaMedica.save();
+
+        // TODO notificar
+        const usuarioPaciente = await Persona.findById(fichaMedica.paciente);
+
+        notificarReservaRechazada(usuarioPaciente.id);
+
+
+        res.json({
+            ok: true,
+            fichaMedica: fichaMedicaActualizada
+        })
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
+}
+
+const aceptarFichaMedica = async(req, res = response) => {
+
+    const id = req.params.id;
+
+    try {
+
+        const fichaMedica = await FichaMedica.findById(id);
+
+        if (!fichaMedica) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Ficha medica no encontrado por id',
+            });
+        }
+
+        fichaMedica.estado = "aceptado";
+
+
+
+        const fichaMedicaActualizada = await fichaMedica.save();
+
+        // TODO notificar
+        const usuarioPaciente = await Persona.findById(fichaMedica.paciente);
+
+        notificarReservaAceptada(usuarioPaciente.id);
+
+        res.json({
+            ok: true,
+            fichaMedica: fichaMedicaActualizada
+        })
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
 }
 
 const actualizarFichaMedica = async(req, res = response) => {
@@ -129,7 +245,6 @@ const borrarFichaMedica = async(req, res = response) => {
             msg: 'Hable con el administrador'
         })
     }
-
 }
 
 const getFichaMedicas = async(req, res) => {
@@ -145,7 +260,7 @@ const getFichaMedicas = async(req, res) => {
         .find(consulta, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } })
         .skip(desde)
         .limit(entrada)
-        .sort({ createdAt: sort }),
+        .sort({ fecha: sort }),
         FichaMedica
         .find(consulta, 'estado').countDocuments()
     ]);
@@ -172,7 +287,7 @@ const getFichaMedicasMedico = async(req, res) => {
             .find({...consulta, 'medico': personaDB.id }, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } })
             .skip(desde)
             .limit(entrada)
-            .sort({ createdAt: sort }),
+            .sort({ fecha: sort }),
             FichaMedica
             .find(consulta, 'estado').countDocuments()
         ]);
@@ -227,5 +342,7 @@ module.exports = {
     getFichaMedicaById,
     getFichaMedicas,
     getFichaMedicasMedico,
-    getFichaMedicasPaciente
+    getFichaMedicasPaciente,
+    aceptarFichaMedica,
+    rechazarFichaMedica
 }
