@@ -9,7 +9,9 @@ const {
     getFichaMedicaById,
     getFichaMedicas,
     getFichaMedicasMedico,
-    getFichaMedicasPaciente
+    getFichaMedicasPaciente,
+    rechazarFichaMedica,
+    aceptarFichaMedica
 } = require('../controllers/ficha-medicas')
 
 
@@ -20,6 +22,8 @@ router.get('/', getFichaMedicas);
 router.post('/', crearFichaMedica);
 
 router.put('/:id', actualizarFichaMedica);
+router.put('/aceptar/:id', aceptarFichaMedica);
+router.put('/rechazar/:id', rechazarFichaMedica);
 
 router.delete('/:id', borrarFichaMedica);
 

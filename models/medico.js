@@ -55,7 +55,6 @@ const medicoSchema = Schema({
         ref: 'Horario',
         required: false
     }
-
 });
 
 

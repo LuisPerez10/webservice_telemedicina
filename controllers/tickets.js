@@ -8,8 +8,7 @@ const getTicket = async(req, res) => {
 
     try {
         const ticketDB = await Ticket.findOne({ medico: medico });
-
-        var tiques = ticketDB.tiques[fecha]
+        var tiques = ticketDB.tiques[fecha];
 
         res.json({
             ok: true,
@@ -23,6 +22,52 @@ const getTicket = async(req, res) => {
         })
     }
 };
+
+
+const putTicketLocal = async(medico, horaInicio, horaFin, fecha, tiempo) => {
+    console.log(fecha);
+    console.log(horaInicio);
+    console.log(horaFin);
+    console.log(tiempo);
+
+
+
+
+    // const fechaFormat = fecha;
+    // const HoraFormat = horaInicio;
+    // const HoraFormatF = horaFin;
+
+
+
+    const detalle = {
+        horaInicio: horaInicio,
+        horaFin: horaFin,
+        tiempo: tiempo + '',
+    };
+
+    var ticketDB;
+    ticketDB = await Ticket.findOne({ medico });
+    if (!ticketDB) {
+        ticketDB = new Ticket({ medico });
+        // asi funcionar ejecutar el postmand y ver ejemplo
+        ticketDB.tiques = {};
+        ticketDB.tiques[fecha] = [detalle];
+    } else {
+
+        if (!ticketDB.tiques[fecha]) {
+            ticketDB.tiques[fecha] = [detalle];
+        } else {
+            ticketDB.tiques[fecha].push(detalle);
+        }
+    }
+
+    ticketDB.markModified('tiques');
+
+    await ticketDB.save(true);
+    return true;
+}
+
+
 const putTicket = async(req, res) => {
 
     const { medico, horaFin, horaInicio, fecha, tiempo } = req.body;
@@ -97,4 +142,4 @@ const removeTicket = async(req, res) => {
 }
 
 
-module.exports = { getTicket, putTicket, removeTicket }
+module.exports = { getTicket, putTicket, removeTicket, putTicketLocal }

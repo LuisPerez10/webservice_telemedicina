@@ -27,6 +27,10 @@ const FichaMedicaSchema = Schema({
         required: false,
         //estado -> pendiente, rechazada, aceptada, atendida.
     },
+    nota: {
+        type: String,
+        required: false
+    },
     medico: {
         type: Schema.Types.ObjectId,
         ref: 'Persona',
