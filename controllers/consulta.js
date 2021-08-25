@@ -71,10 +71,9 @@ const getSalabyFicha = async(req = request, res = response) => {
 
     const consulta = await Consulta.findOne({ fichamedica: id });
 
-    res.json({
-        ok: true,
-        sala: consulta.sala
-    })
+    res.json(
+        consulta.sala
+    )
 
 
 };
