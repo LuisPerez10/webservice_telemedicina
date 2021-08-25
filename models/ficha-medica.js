@@ -40,7 +40,11 @@ const FichaMedicaSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Persona',
         required: true
+<<<<<<< HEAD
     }
+=======
+    },
+>>>>>>> c0b459f5cc274339c7d738877caac40a4a13af95
 
 }, { collection: 'fichaMedicas' });
 

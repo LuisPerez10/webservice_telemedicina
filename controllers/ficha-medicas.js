@@ -1,5 +1,5 @@
 const { response } = require('express');
-
+const Medico = require('../models/medico');
 const FichaMedica = require('../models/ficha-medica');
 const Persona = require('../models/persona');
 const Medico = require('../models/medico');
@@ -309,18 +309,46 @@ const getFichaMedicasMedico = async(req, res) => {
 const getFichaMedicasPaciente = async(req, res) => {
     const uid = req.uid;
     const personaDB = await Persona.findOne({ usuario: uid });
+    var index = 0;
+    var medico = [];
 
     try {
 
         const fichaMedicas = await
         FichaMedica
-            .find({ 'paciente': personaDB.id, estado: 'aceptado' }, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id' } })
-            .sort({ createdAt: 1 });
-        // total = usuarios.length;
+            .find({ 'paciente': personaDB.id, estado: 'aceptado' }, 'nroFicha fecha horaInicio estado').populate({ path: 'paciente', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id ' } }).populate({ path: 'medico', select: 'nombre apellido celular', populate: { path: 'usuario', select: '_id img' } })
+            .sort({ fecha: 1 });
 
-        res.json({
-            fichaMedicas
+        fichaMedicas.forEach(async(usuario) => {
+            const medicoDB = await Medico.findOne({ "persona": usuario.medico._id }, 'calificacion especialidad');
+
+            medico.push(medicoDB);
+
+            index = index + 1;
+
+            if (index == (fichaMedicas.length)) {
+
+                return res.json({
+                    ok: true,
+                    fichaMedicas,
+                    medico
+                });
+            }
         });
+
+
+
+
+
+
+
+
+
+
+        // res.json({
+        //     fichaMedicas,
+        //     especialidades
+        // });
     } catch (error) {
         console.log(error);
         res.status(500).json({

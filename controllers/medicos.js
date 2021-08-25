@@ -39,6 +39,7 @@ const getMedicoById = async(req, res = response) => {
     }
 }
 
+
 const crearMedico = async(req, res = response) => {
 
     //id persona
