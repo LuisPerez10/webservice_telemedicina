@@ -1,5 +1,4 @@
 const { response } = require('express');
-const Medico = require('../models/medico');
 const FichaMedica = require('../models/ficha-medica');
 const Persona = require('../models/persona');
 const Medico = require('../models/medico');
@@ -336,19 +335,6 @@ const getFichaMedicasPaciente = async(req, res) => {
             }
         });
 
-
-
-
-
-
-
-
-
-
-        // res.json({
-        //     fichaMedicas,
-        //     especialidades
-        // });
     } catch (error) {
         console.log(error);
         res.status(500).json({
