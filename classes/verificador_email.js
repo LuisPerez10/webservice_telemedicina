@@ -14,7 +14,7 @@ class Verificador {
         let codigo = Guid.Generador();
 
         // const fullUrl = request.protocol + '://' + request.get('host') + request.originalUrl + "api/usuarios/verificado?codigo=" + codigo;
-        const fullUrl = "http://localhost:3000/api/usuarios/verificado?email=" + email + "&codigo=" + codigo;
+        const fullUrl = "https://telemedicina-topicos.herokuapp.com/api/usuarios/verificado?email=" + email + "&codigo=" + codigo;
         console.log('enviar');
 
         var html;
