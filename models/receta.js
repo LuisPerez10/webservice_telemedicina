@@ -16,7 +16,7 @@ const medicamentoSchema = Schema({
         default: "Sin via"
     },
     frecuencia: {
-        type: Number,
+        type: String,
         required: false,
         default: 0
     },
@@ -38,12 +38,16 @@ const recetaSchema = Schema({
         required: false,
         default: "Habilitado"
     },
-    estado: {
+    numero: {
         type: String,
         required: false,
-        default: "Habilitado"
+        default: 0
     },
-        
+    fecha:{
+        type: Date,
+        required: false,
+        default:Date.now(),
+    },        
     medicamentos: [medicamentoSchema],
     
     consulta: {
