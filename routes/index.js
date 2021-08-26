@@ -16,6 +16,7 @@ app.use('/fichamedica', require('./ficha-medica'));
 app.use('/notificacion', require('./notificacion'));
 app.use('/horarios', require('./horario'));
 app.use('/consulta', require('./consulta'));
+app.use('/receta', require('./receta'));
 // app.use(require('./upload_image'));
 
 module.exports = app;
