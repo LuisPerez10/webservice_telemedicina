@@ -4,21 +4,42 @@ const { v4: uuidv4 } = require('uuid');
 
 
 
-const createConsulta = async(req = request, res = response) => {
+const createConsultaLC = async(data) => {
     const roomName = `${ uuidv4() }`;
+    try {
+        var sala = {
+            room: roomName,
+        };
 
+        var consulta = new Consulta({
+            ...data,
+            sala: sala
+        });
+
+        await consulta.save();
+        console.log('consulta creada');
+        console.log(consulta);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+
+const createConsulta = async(req = request, res = response) => {
+
+    const roomName = `${ uuidv4() }`;
     try {
 
         var sala = {
             room: roomName,
         };
 
-        const consulta = new Consulta(req.body);
+        const consulta = new Consulta(data);
 
 
 
-        await consulta.save((err, consultaDB) => {
-            if (err) { res.json({ ok: false, err }); }
+        await consulta.save(consultaDB => {
 
             consultaDB.sala = sala;
 
@@ -30,10 +51,6 @@ const createConsulta = async(req = request, res = response) => {
             });
 
         });
-
-
-
-
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -79,6 +96,7 @@ const getSalabyFicha = async(req = request, res = response) => {
 };
 
 
+
 const updateEstadoSala = async(req = request, res = response) => {
     const id = req.params.id;
 
@@ -97,10 +115,41 @@ const updateEstadoSala = async(req = request, res = response) => {
 
 };
 
+const finalizarSala = async(req = request, res = response) => {
+    const id = req.params.id;
 
+    await Consulta.findOne({ fichamedica: id }, (err, consultaDB) => {
+        if (err) { res.json({ ok: false, err }); }
+
+
+        consultaDB.sala.estado = "terminado";;
+        consultaDB.save((err, updated) => {
+            res.json({
+                ok: true,
+                sala: updated.sala
+            })
+        });
+    });
+
+};
+
+const getConsultaById = async(req = request, res = response) => {
+    const id = req.params.id; // id fichamedica
+
+    const consulta = await Consulta.findOne({ fichamedica: id });
+
+    res.json(
+        consulta
+    )
+
+
+};
 module.exports = {
     createConsulta,
     getConsulta,
     getSalabyFicha,
-    updateEstadoSala
+    updateEstadoSala,
+    createConsultaLC,
+    getConsultaById,
+    finalizarSala
 }

@@ -16,7 +16,8 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
             titulo: 'Mantenimientos',
             icono: 'mdi mdi-folder-lock-open',
             submenu: [
-                { titulo: 'Ficha Medicas', url: 'fichamedicas' }
+                { titulo: 'Ficha Medicas', url: 'fichamedicas' },
+                { titulo: 'Cita Medicas', url: 'citamedicas' }
             ]
         },
     ];

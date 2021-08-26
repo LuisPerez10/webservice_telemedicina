@@ -2,6 +2,7 @@ const { response } = require('express');
 const FichaMedica = require('../models/ficha-medica');
 const Persona = require('../models/persona');
 const Medico = require('../models/medico');
+const { createConsultaLC } = require('./consulta');
 const Usuario = require('../models/usuario');
 var Guid = require('../classes/generador');
 var { notificarNuevaReserva, notificarReservaRechazada, notificarReservaAceptada } = require('./notificaciones');
@@ -88,7 +89,6 @@ const getFichaMedicaById = async(req, res) => {
 }
 
 const rechazarFichaMedica = async(req, res = response) => {
-
     const id = req.params.id;
 
     try {
@@ -102,16 +102,32 @@ const rechazarFichaMedica = async(req, res = response) => {
             });
         }
 
-        fichaMedica.estado = "cancelado";
+        fichaMedica.estado = "rechazado";
         fichaMedica.nota = req.body.nota;
 
         const fichaMedicaActualizada = await fichaMedica.save();
 
-        // TODO notificar
         const usuarioPaciente = await Persona.findById(fichaMedica.paciente);
 
-        notificarReservaRechazada(usuarioPaciente.id);
 
+
+        // Borrar tiquet
+        const personaMedico = await Persona.findById(fichaMedica.medico);
+        const medicoDB = await Medico.findOne({ persona: personaMedico.id });
+
+        var fecha = formatDate(fichaMedica.fecha);
+        var horaInicio = formatDateTime(fichaMedica.horaInicio.toISOString());
+
+        var medico = medicoDB.id;
+
+
+
+        await Tickets.removeTicketLC(medico, horaInicio, fecha);
+
+
+        // TODO notificar
+
+        notificarReservaRechazada(usuarioPaciente.usuario);
 
         res.json({
             ok: true,
@@ -131,12 +147,12 @@ const rechazarFichaMedica = async(req, res = response) => {
 }
 
 const aceptarFichaMedica = async(req, res = response) => {
-
+    console.log('aceptado');
     const id = req.params.id;
 
     try {
 
-        const fichaMedica = await FichaMedica.findById(id);
+        var fichaMedica = await FichaMedica.findById(id);
 
         if (!fichaMedica) {
             return res.status(404).json({
@@ -146,15 +162,24 @@ const aceptarFichaMedica = async(req, res = response) => {
         }
 
         fichaMedica.estado = "aceptado";
+        //crear consulta
+        var data = {
+            fichamedica: fichaMedica.id,
+            paciente: fichaMedica.paciente,
+            medico: fichaMedica.medico,
+            horaInicio: fichaMedica.horaInicio
 
-
+        }
+        await createConsultaLC(data);
 
         const fichaMedicaActualizada = await fichaMedica.save();
+
+
 
         // TODO notificar
         const usuarioPaciente = await Persona.findById(fichaMedica.paciente);
 
-        notificarReservaAceptada(usuarioPaciente.id);
+        notificarReservaAceptada(usuarioPaciente.usuario);
 
         res.json({
             ok: true,
@@ -175,7 +200,6 @@ const aceptarFichaMedica = async(req, res = response) => {
 }
 
 const actualizarFichaMedica = async(req, res = response) => {
-
     const id = req.params.id;
 
     try {

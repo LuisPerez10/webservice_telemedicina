@@ -101,8 +101,11 @@ const putTicket = async(req, res) => {
     })
 }
 
+
+
+
 const removeTicket = async(req, res) => {
-    const { medico, horaFin, horaInicio, fecha, tiempo } = req.body;
+    const { medico, horaInicio, fecha } = req.body;
 
     const ticketDB = await Ticket.findOne({ medico });
     if (!ticketDB) {
@@ -117,14 +120,12 @@ const removeTicket = async(req, res) => {
             msg: "no existe registrado para este dia"
         })
     }
-    const detalle = {
-        horaInicio: horaInicio,
-        horaFin: horaFin,
-        tiempo: tiempo
-    };
+
     var index = -1;
-    ticketDB.tiques[fecha].map((a, idx) => {
-        let isEqual = (JSON.stringify(a) == JSON.stringify(detalle));
+    ticketDB.tiques[fecha].map((tiq, idx) => {
+
+
+        let isEqual = tiq.horaInicio == horaInicio;
 
         if (isEqual) index = idx;
     });
@@ -142,4 +143,39 @@ const removeTicket = async(req, res) => {
 }
 
 
-module.exports = { getTicket, putTicket, removeTicket, putTicketLocal }
+const removeTicketLC = async(medico, horaInicio, fecha) => {
+
+    const ticketDB = await Ticket.findOne({ medico });
+    if (!ticketDB) {
+        return res.status(400).json({
+            ok: false
+        })
+    }
+
+    if (!ticketDB.tiques[fecha]) {
+        return false;
+    }
+
+    var index = -1;
+    ticketDB.tiques[fecha].map((tiq, idx) => {
+
+        let isEqual = tiq.horaInicio == horaInicio;
+        console.log(isEqual);
+        console.log(tiq.horaInicio, horaInicio);
+
+        if (isEqual) index = idx;
+    });
+
+    if (index != -1) {
+        ticketDB.tiques[fecha].splice(index, 1);
+    }
+
+    ticketDB.markModified('tiques');
+    await ticketDB.save();
+
+    return true;
+
+}
+
+
+module.exports = { getTicket, putTicket, removeTicket, putTicketLocal, removeTicketLC }

@@ -7,8 +7,6 @@ function getHoraMinuto(date) {
 
 function formatDateTime(date) {
     date = String(date).substring(0, 19);
-    console.log('date');
-    console.log(date);
     var d = new Date(date),
         minutes = '' + (d.getMinutes()),
         hora = '' + (d.getHours());
