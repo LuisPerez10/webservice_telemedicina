@@ -66,6 +66,31 @@ const getConsulta = async(req = request, res = response) => {
 
 }
 
+const getConsultaByStatus = async(req = request, res = response) => {
+
+    const id = req.params.id;
+    const status = req.params.status;
+
+    try {
+        const consulta = await Consulta.find({ paciente: id, estado: status });
+
+
+
+        res.json({
+
+            consulta
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
+}
+
 const getSalabyFicha = async(req = request, res = response) => {
     const id = req.params.id;
 
@@ -97,10 +122,31 @@ const updateEstadoSala = async(req = request, res = response) => {
 
 };
 
+const updateConsultaStatus = async(req = request, res = response) => {
+    const id = req.params.id;
+    const status = req.params.status;
+
+    await Consulta.findOne({ _id: id }, (err, consultaDB) => {
+        if (err) { res.json({ ok: false, err }); }
+
+
+        consultaDB.estado = status;
+        consultaDB.save((err, updated) => {
+            res.json({
+                ok: true,
+                estado: updated.estado
+            })
+        });
+    });
+
+};
+
 
 module.exports = {
     createConsulta,
     getConsulta,
     getSalabyFicha,
-    updateEstadoSala
+    updateEstadoSala,
+    getConsultaByStatus,
+    updateConsultaStatus
 }
