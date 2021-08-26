@@ -3,6 +3,7 @@ const { response } = require('express');
 const Medico = require('../models/medico');
 const Persona = require('../models/persona');
 const Usuario = require('../models/usuario');
+const Horario = require('../models/horario');
 const Especialidad = require('../models/especialidad');
 
 
@@ -45,14 +46,22 @@ const crearMedico = async(req, res = response) => {
     //id persona
     const { persona, ...campos } = req.body;
 
+    const horarioDB = new Horario({
+        dias: "L,M,Mi,J,V,S,D",
+        horaInicio: "08:00",
+        horaCierre: "12:00",
+        tiempo: "15"
+    });
+
     const medico = new Medico({
         persona,
         ...campos
     });
 
 
+    medico.Horario = horarioDB.id;
     try {
-
+        await horarioDB.save();
         const medicoDB = await medico.save();
 
 

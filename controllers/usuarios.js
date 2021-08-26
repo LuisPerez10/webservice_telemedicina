@@ -135,6 +135,8 @@ const crearUsuario = async(req, res = response) => {
             ...req.body
         });
 
+        usuario.nombre = persona.nombre + ' ' + persona.apellido;
+
         // Guardar persona
         await usuario.save();
         await persona.save();
