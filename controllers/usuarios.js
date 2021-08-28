@@ -106,7 +106,6 @@ const actualizarUsuario = async(req, res = response) => {
 }
 
 const crearUsuario = async(req, res = response) => {
-    console.log(req.body);
     const { email, password, role } = req.body;
     try {
 
@@ -121,14 +120,17 @@ const crearUsuario = async(req, res = response) => {
 
 
 
-        const usuario = new Usuario(req.body);
+        var usuario = new Usuario(req.body);
         // Encriptar contraseña
         const salt = bcrypt.genSaltSync();
         usuario.password = bcrypt.hashSync(password, salt);
         usuario.estado = getEstadoFromRole(role);
 
         // Guardar usuario
-
+        console.log('usuario');
+        console.log(usuario);
+        const newususario = await usuario.save();
+        console.log(newususario);;
 
         const persona = new Persona({
             usuario: usuario.id,
@@ -138,7 +140,6 @@ const crearUsuario = async(req, res = response) => {
         usuario.nombre = persona.nombre + ' ' + persona.apellido;
 
         // Guardar persona
-        await usuario.save();
         await persona.save();
         const data = await saveByRol(role, persona.id, req);
 
@@ -175,6 +176,8 @@ const saveByRol = async(role, id, req) => {
         //     break;
         case 'PACIENTE_ROLE':
             // TODO
+            console.log(campos);
+            console.log('enviar correo');
             enviarEmailClass("Confirmar Correo", campos.email, 'confirma');
             // enviar correo para cambiar el estado de inhabilitado
             data = new Paciente({

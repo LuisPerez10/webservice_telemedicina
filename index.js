@@ -21,7 +21,7 @@ app.use(express.json());
 dbConnection();
 
 // Directorio publico 
-app.use(express.static('public'));
+// app.use(express.static('public'));
 
 
 const server = require('http').createServer(app);

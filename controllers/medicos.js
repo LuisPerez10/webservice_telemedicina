@@ -42,6 +42,7 @@ const getMedicoById = async(req, res = response) => {
 
 
 const crearMedico = async(req, res = response) => {
+    console.log(req.body);
 
     //id persona
     const { persona, ...campos } = req.body;
@@ -59,7 +60,10 @@ const crearMedico = async(req, res = response) => {
     });
 
 
-    medico.Horario = horarioDB.id;
+    medico.horario = horarioDB.id;
+    console.log(horarioDB);
+    console.log(medico);
+
     try {
         await horarioDB.save();
         const medicoDB = await medico.save();
